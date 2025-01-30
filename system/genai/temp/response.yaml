@@ -1,0 +1,120 @@
+"models":
+- "classname": |-
+    Role
+  "code": |-
+    class Role(Base):\n    __tablename__ = 'roles'\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    name = Column(String, nullable=False)\n    description = Column(String)\n    \n    jobs = relationship('Job', back_populates='role')
+  "description": |-
+    Model representing different roles within the organization.
+  "name": |-
+    Role
+- "classname": |-
+    Skill
+  "code": |-
+    class Skill(Base):\n    __tablename__ = 'skills'\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    name = Column(String, nullable=False)\n    description = Column(String)\n    \n    training_program_id = Column(Integer, ForeignKey('training_programs.id'))\n    certification_id = Column(Integer, ForeignKey('certifications.id'))\n    training_program = relationship('TrainingProgram', back_populates='skills')\n    certification = relationship('Certification', back_populates='skills')
+  "description": |-
+    Model representing a particular skill.
+  "name": |-
+    Skill
+- "classname": |-
+    Job
+  "code": |-
+    class Job(Base):\n    __tablename__ = 'jobs'\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    title = Column(String, nullable=False)\n    role_id = Column(Integer, ForeignKey('roles.id'))\n    \n    role = relationship('Role', back_populates='jobs')\n    required_skills = relationship('JobSkill', back_populates='job')
+  "description": |-
+    Model representing a job and its role.
+  "name": |-
+    Job
+- "classname": |-
+    Employee
+  "code": |-
+    class Employee(Base):\n    __tablename__ = 'employees'\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    name = Column(String, nullable=False)\n    hire_date = Column(Date)\n    \n    skills = relationship('EmployeeSkill', back_populates='employee')
+  "description": |-
+    Model representing staff in the organization.
+  "name": |-
+    Employee
+- "classname": |-
+    TrainingProgram
+  "code": |-
+    class TrainingProgram(Base):\n    __tablename__ = 'training_programs'\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    name = Column(String, nullable=False)\n    duration_weeks = Column(Integer)
+  "description": |-
+    Model representing training programs associated with skills.
+  "name": |-
+    TrainingProgram
+- "classname": |-
+    Certification
+  "code": |-
+    class Certification(Base):\n    __tablename__ = 'certifications'\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    name = Column(String, nullable=False)\n    expiration_period_years = Column(Integer)\n    \n    skills = relationship('Skill', back_populates='certification')
+  "description": |-
+    Model representing certifications associated with skills.
+  "name": |-
+    Certification
+- "classname": |-
+    EmployeeSkill
+  "code": |-
+    class EmployeeSkill(Base):\n    __tablename__ = 'employee_skills'\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    employee_id = Column(Integer, ForeignKey('employees.id'))\n    skill_id = Column(Integer, ForeignKey('skills.id'))\n    certification_expiry = Column(Date)\n    certification_passed = Column(Boolean, default=False)\n    \n    employee = relationship('Employee', back_populates='skills')\n    skill = relationship('Skill', backref='employee_skills')
+  "description": |-
+    Linking table for employee skills and their certifications.
+  "name": |-
+    EmployeeSkill
+- "classname": |-
+    JobSkill
+  "code": |-
+    class JobSkill(Base):\n    __tablename__ = 'job_skills'\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    job_id = Column(Integer, ForeignKey('jobs.id'))\n    skill_id = Column(Integer, ForeignKey('skills.id'))\n    \n    job = relationship('Job', back_populates='required_skills')\n    skill = relationship('Skill', backref='job_skills')
+  "description": |-
+    Linking table for job required skills.
+  "name": |-
+    JobSkill
+"name": |-
+  Super Dube Database
+"rules": []
+"test_data": |-
+  Sample data for a potential dental office scenario setup.
+"test_data_rows":
+- "code": |-
+    role_dentist = Role(name='Dentist', description='Dental professional responsible for oral health.')
+  "test_data_row_variable": |-
+    role_dentist
+- "code": |-
+    role_receptionist = Role(name='Receptionist', description='Front office staff handling scheduling and patient interaction.')
+  "test_data_row_variable": |-
+    role_receptionist
+- "code": |-
+    role_hygienist = Role(name='Hygienist', description='Dental hygienist assisting lateral duties.')
+  "test_data_row_variable": |-
+    role_hygienist
+- "code": |-
+    role_assistant = Role(name='Dental Assistant', description='Support dentist with various procedures.')
+  "test_data_row_variable": |-
+    role_assistant
+- "code": |-
+    skill_cleaning = Skill(name='Teeth Cleaning', description='Regular cleaning and maintenance of oral hygiene.')
+  "test_data_row_variable": |-
+    skill_cleaning
+- "code": |-
+    skill_xray = Skill(name='X-Ray Imaging', description='Taking and analyzing dental x-rays.')
+  "test_data_row_variable": |-
+    skill_xray
+- "code": |-
+    skill_scheduling = Skill(name='Appointment Scheduling', description='Efficient scheduling and patient management.')
+  "test_data_row_variable": |-
+    skill_scheduling
+- "code": |-
+    skill_anesthesia = Skill(name='Administer Anesthesia', description='Administer and handle local anesthesia.')
+  "test_data_row_variable": |-
+    skill_anesthesia
+- "code": |-
+    employee_dr_smith = Employee(name='Dr. John Smith', hire_date=date(2015, 3, 18))
+  "test_data_row_variable": |-
+    employee_dr_smith
+- "code": |-
+    employee_mrs_jones = Employee(name='Mrs. Emily Jones', hire_date=date(2018, 11, 2))
+  "test_data_row_variable": |-
+    employee_mrs_jones
+- "code": |-
+    employee_mr_wilson = Employee(name='Mr. Kevin Wilson', hire_date=date(2020, 5, 20))
+  "test_data_row_variable": |-
+    employee_mr_wilson
+- "code": |-
+    employee_miss_clark = Employee(name='Miss. Rachel Clark', hire_date=date(2021, 7, 8))
+  "test_data_row_variable": |-
+    employee_miss_clark
+"test_data_sqlite": ""
